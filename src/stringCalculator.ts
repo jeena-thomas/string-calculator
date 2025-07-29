@@ -1,7 +1,33 @@
+function escapeRegExp(s: string) {
+  // Escapes special regex characters
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 export function add(numbers: string): number {
   if (numbers === "") {
     return 0;
   }
-  const parts = numbers.split(/,|\n/).map(num => parseInt(num));
+
+  let delimiter = ",";
+  let tempNumbers = numbers;
+
+  // Check for custom delimiter
+  if (numbers.startsWith("//")) {
+    const delimiterEndIndex = numbers.indexOf("\n");
+    delimiter = numbers.substring(2, delimiterEndIndex);
+    tempNumbers = numbers.substring(delimiterEndIndex + 1);
+
+    // Check if delimiter is wrapped in brackets and remove them
+    if (delimiter.startsWith("[") && delimiter.endsWith("]")) {
+      delimiter = delimiter.slice(1, -1);
+    }
+  }
+
+  // Replace newlines and custom delimiters with commas
+  const normalizedNumbers = tempNumbers
+    .replace(/\n/g, ",")
+    .replace(new RegExp(escapeRegExp(delimiter), "g"), ",");
+
+  const parts = normalizedNumbers.split(",").map((num) => parseInt(num));
   return parts.reduce((sum, i) => sum + i, 0);
 }
