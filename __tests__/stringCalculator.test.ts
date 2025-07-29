@@ -25,6 +25,8 @@ describe("String Calculator", () => {
   test("should supports custom delimiters", () => {
     expect(add("//;\n1;2")).toBe(3);
     expect(add("//[***]\n1***2***3")).toBe(6);
+    expect(add("//[*][%]\n1*2%3")).toBe(6);
+    expect(add("//[**][%%]\n1**2%%3")).toBe(6);
   });
 
   test("should throw an error for negative numbers", () => {
@@ -33,5 +35,11 @@ describe("String Calculator", () => {
     expect(() => add("2,-4,3,-5")).toThrow(
       "Negative numbers not allowed: -4,-5"
     );
+  });
+
+  test("should ignore numbers greater than 1000", () => {
+    expect(add("2,1001")).toBe(2);
+    expect(add("1000,1")).toBe(1001);
+    expect(add("//[***]\n1001***2***3")).toBe(5);
   });
 });
