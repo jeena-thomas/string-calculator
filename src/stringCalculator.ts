@@ -22,12 +22,20 @@ export function add(numbers: string): number {
       delimiter = delimiter.slice(1, -1);
     }
   }
-
+  
   // Replace newlines and custom delimiters with commas
   const normalizedNumbers = tempNumbers
-    .replace(/\n/g, ",")
-    .replace(new RegExp(escapeRegExp(delimiter), "g"), ",");
+  .replace(/\n/g, ",")
+  .replace(new RegExp(escapeRegExp(delimiter), "g"), ",");
+  
+  const numbersArray = normalizedNumbers.split(",").map((num) => parseInt(num));
 
-  const parts = normalizedNumbers.split(",").map((num) => parseInt(num));
-  return parts.reduce((sum, i) => sum + i, 0);
+   // Check for negative numbers
+  const negativeNumbers = numbersArray.filter(num => num < 0);
+  if (negativeNumbers.length > 0) {
+    throw new Error(`Negative numbers not allowed: ${negativeNumbers.join(',')}`);
+  }
+  
+
+  return numbersArray.reduce((sum, i) => sum + i, 0);
 }
